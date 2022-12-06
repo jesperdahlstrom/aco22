@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-const file: string = fs.readFileSync('assets/01/input.txt', 'utf-8');
+// const file: string = fs.readFileSync('../../assets/01/input.txt', 'utf-8');
 
 export function getSumArray(input: string): number[]{
 
