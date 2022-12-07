@@ -1,7 +1,5 @@
 import * as fs from 'fs';
-const strategyGuide: string = fs.readFileSync('../../assets/02/strategyGuide.txt', 'utf-8');
-let score: number = 0;
-let outcomeScore: number = 0;
+// const strategyGuide: string = fs.readFileSync('../../assets/02/strategyGuide.txt', 'utf-8');
 
 enum SelfChoices {
     ROCK = 'X',
@@ -39,11 +37,6 @@ enum ElfSelfTranslation {
     C = 'Z'
 }
 
-export function getKeyByValue(choices: any, value: string) {
-    const indexOf = Object.values(choices).indexOf(value);
-    return Object.keys(choices)[indexOf];
-  }
-
 export function formatGameData(file: string){
     const strategyGuideArray: string[] = file.toString().split("\n");
     return strategyGuideArray.map((e) => e.replace(' ', ''))
@@ -55,9 +48,9 @@ export function formatOutcomeGameData(file: string){
 }
 
 export function calculateGameScore(rounds: string[]){
+    let score: number = 0;
 
     rounds.forEach((game: string) => {
-        
         switch(game){
             case ElfChoices.ROCK + SelfChoices.ROCK:
                 score += (1 + 3)
@@ -92,21 +85,20 @@ export function calculateGameScore(rounds: string[]){
 }
 
 export function calculateActualOutcome(rounds: string[][]){
+    let score: number = 0;
     rounds.forEach((round) => {
         const [ elfChoice, outcome] = round;
         switch(outcome){
             case Outcome.DRAW:
-                calculateGameScore([`${elfChoice + ElfSelfTranslation[elfChoice as keyof typeof ElfSelfTranslation]}`])
+               score += calculateGameScore([`${elfChoice + ElfSelfTranslation[elfChoice as keyof typeof ElfSelfTranslation]}`])
                 break;
             case Outcome.LOSE:
-                calculateGameScore([`${elfChoice + Lose[elfChoice as keyof typeof Lose]}`])
+                score += calculateGameScore([`${elfChoice + Lose[elfChoice as keyof typeof Lose]}`])
                 break;
             case Outcome.WIN:
-                calculateGameScore([`${elfChoice + Win[elfChoice as keyof typeof Win]}`])
+                score += calculateGameScore([`${elfChoice + Win[elfChoice as keyof typeof Win]}`])
                 break;
         }
     })
-    return score
+    return score;
 }
-
-console.log(calculateGameScore(formatGameData(strategyGuide)));
