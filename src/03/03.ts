@@ -1,10 +1,5 @@
 import * as fs from 'fs';
-const rucksackUnordered: string = fs.readFileSync('../../assets/03/rucksack.txt', 'utf-8');
-const rucksackArray: string[] = rucksackUnordered.toString().split("\n");
-const rucksackSplit: string[][] = rucksackArray.map((rucksack) => [
-        rucksack.slice(0, rucksack.length / 2),
-        rucksack.slice(rucksack.length / 2, rucksack.length)
-    ])
+// const rucksackUnordered: string = fs.readFileSync('../../assets/03/rucksack.txt', 'utf-8');
 
     enum Priorities{
         a = 1,
@@ -61,6 +56,15 @@ const rucksackSplit: string[][] = rucksackArray.map((rucksack) => [
         Z = 52
     };
 
+export function splitRucksack(rucksackUnordered: string){
+    const rucksackArray: string[] = rucksackUnordered.toString().split("\n");
+    
+    return rucksackArray.map((rucksack) => [
+        rucksack.slice(0, rucksack.length / 2),
+        rucksack.slice(rucksack.length / 2, rucksack.length)
+    ])
+}
+
 export function inventoryRucksack(rucksack: string[][]){
     const sortedItems = new Map<string, number>();
     
@@ -79,12 +83,27 @@ export function inventoryRucksack(rucksack: string[][]){
 
 export function calculatePriorities(sortedItem: Map<string, number>){
     let prioritizedSum: number = 0;
-
-    for (const [key, value] of sortedItem){
-        prioritizedSum += Priorities[key as keyof typeof Priorities] * value
-    }
-
+    for (const [key, value] of sortedItem) prioritizedSum += Priorities[key as keyof typeof Priorities] * value
     return prioritizedSum;
 }
 
-console.log(calculatePriorities(inventoryRucksack(rucksackSplit)));
+export function calculateBadgeSum(rucksackArray: string[]){
+    let joinedRucksacks: string[][] = [];
+    let tokenSum: number  = 0;
+    
+    while(rucksackArray.length) joinedRucksacks.push(rucksackArray.splice(0,3));
+
+    joinedRucksacks.forEach((rucksacks) => {
+        const firstRucksackArray = rucksacks[0].split('')         
+        for(let i = 0; i < firstRucksackArray.length; i++){
+            if(rucksacks[1].includes(firstRucksackArray[i]) && rucksacks[2].includes(firstRucksackArray[i])){
+                tokenSum += Priorities[firstRucksackArray[i] as keyof typeof Priorities]
+                break;
+            }
+        }
+    });    
+    
+    return tokenSum
+}
+
+
